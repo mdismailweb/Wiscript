@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiScript - Wisdom Scripts</title>
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+
+    <!-- PWA Manifest & Meta -->
+    <meta name="theme-color" content="#0a0e27">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WiScript">
+    <link rel="manifest"
+        href='data:application/manifest+json,{"name":"WiScript","short_name":"WiScript","start_url":".","display":"standalone","background_color":"#0a0e27","theme_color":"#0a0e27","description":"Timeless wisdom from Robert Greene in a focused, beautiful interface.","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>","sizes":"192x192","type":"image/svg+xml"},{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-card: rgba(17, 25, 40, 0.75);
+            --accent-purple: #a78bfa;
+            --accent-blue: #60a5fa;
+            --accent-pink: #f472b6;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(103, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(5%, -5%) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-5%, 5%) rotate(240deg);
+            }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Search section */
+        .search-section {
+            margin: 30px 0;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            background: var(--bg-card);
+            border: 2px solid rgba(167, 139, 250, 0.2);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        /* Refresh button */
+        .refresh-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 70px rgba(103, 126, 234, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .refresh-icon {
+            display: inline-block;
+            transition: transform 0.5s ease;
+        }
+
+        .refresh-btn:hover .refresh-icon {
+            transform: rotate(180deg);
+        }
+
+        /* WiScript cards */
+        .wiscript-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .wiscript-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInCard 0.5s ease both;
+        }
+
+        .wiscript-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .wiscript-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(167, 139, 250, 0.3);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .wiscript-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .wiscript-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+
+        .wiscript-quote {
+            display: block;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInCard {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .wiscript-card {
+                padding: 24px;
+            }
+
+            .wiscript-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Star button */
+        .star-btn {
+            background: none;
+            border: none;
+            color: var(--accent-purple);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: transform 0.2s;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .star-btn.saved {
+            color: var(--accent-blue);
+        }
+
+        /* Header buttons */
+        .header-btn {
+            background: var(--bg-card);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 6px 12px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Saved flashcard */
+        .saved-card {
+            perspective: 1000px;
+        }
+
+        .saved-card-inner {
+            position: relative;
+            width: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .saved-card.flipped .saved-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .saved-card-front,
+        .saved-card-back {
+            position: absolute;
+            width: 100%;
+            backface-visibility: hidden;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+        }
+
+        .saved-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Saved Card (Flashcard) */
+        .saved-card {
+            background-color: transparent;
+            perspective: 1000px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .saved-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .saved-card.flipped .saved-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .saved-card-front,
+        .saved-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Use overflow-y to allow scrolling for long texts */
+            overflow-y: auto;
+            /* Remove justify-content: center to avoid clipping top of long content */
+        }
+
+        /* Center content vertically if it fits, otherwise let it scroll */
+        .saved-card-front>*,
+        .saved-card-back>* {
+            margin-top: auto;
+            margin-bottom: auto;
+            width: 100%;
+            /* Ensure text uses full width */
+        }
+
+        .saved-card-front {
+            background: var(--bg-card);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+        }
+
+        .saved-card-back {
+            background: var(--gradient);
+            color: white;
+            transform: rotateY(180deg);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>WiScript</h1>
+            <p class="tagline">Timeless wisdom, one insight at a time</p>
+            <!-- New navigation buttons -->
+            <button id="savedTabBtn" class="header-btn">Saved</button>
+            <button id="backupBtn" class="header-btn">Backup</button>
+            <button id="restoreBtn" class="header-btn">Restore</button>
+            <input type="file" id="restoreFile" accept="application/json" style="display:none;" />
+        </header>
+
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Search for wisdom by topic or keyword..." autocomplete="off">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <button class="refresh-btn" id="refreshBtn">
+                <span class="refresh-icon">↻</span>
+                <span>Get Random WiScript</span>
+            </button>
+        </div>
+
+        <div class="wiscript-container" id="wiscriptContainer">
+            <!-- WiScripts will be inserted here -->
+        </div>
+        <!-- Saved quotes container (hidden by default) -->
+        <div class="wiscript-container hidden" id="savedContainer"></div>
+    </div>
+
+    <script>
+        // Embedded wisdom data from Robert Greene tweets
+        const wiscripts = [
+            "Become who you are by learning who you are.",
+            "Never whine, never complain, never try to justify yourself.",
+            "Never be distracted by people’s glamorous portraits of themselves and their lives; search and dig for what really imprisons them.",
+            "An emotional response to a situation is the single greatest barrier to power, a mistake that will cost you a lot more than any temporary satisfaction you might gain by expressing your feelings.",
+            "To succeed in the game of power, you have to master your emotions. But even if you succeed in gaining such self-control, you can never control the temperamental dispositions of those around you. And this presents a great danger.",
+            "In the future, the great division will be between those who have trained themselves to handle these complexities and those who are overwhelmed by them -- those who can acquire skills and discipline their minds and those who are irrevocably distracted by all the media around them and can never focus enough to learn.",
+            "People are more complicated than the masks they wear in society.",
+            "The time that leads to mastery is dependent on the intensity of our focus.",
+            "People around you, constantly under the pull of their emotions, change their ideas by the day or by the hour, depending on their mood. You must never assume that what people say or do in a particular moment is a statement of their permanent desires.",
+            "No one is really going to help you or give you direction. In fact, the odds are against you.",
+            "When our emotions are engaged, we often have trouble seeing things as they are.",
+            "The future belongs to those who learn more skills and combine them in creative ways.",
+            "Whenever you can, bury the hatchet with an enemy, and make a point of putting him in your service.",
+            "Make your masters appear more brilliant than they are and you will attain the heights of power.",
+            "The great questions of the time will be decided, not by speeches and resolutions of majorities, but by iron and blood.",
+            "Power has its own rhythms and patterns. Those who succeed at the game are the ones who control the patterns and vary them at will, keeping people off balance while they set the tempo. The essence of strategy is controlling what comes next, and the elation of victory can upset your ability to control what comes next in two ways. First, you owe your success to a pattern that you are apt to try to repeat.... Second, success tends to go to your head ... The powerful vary their rhythms and patterns, change course, adapt to circumstance, and learn to improvise.",
+            "Excuses satisfy no one and apologies make everyone uncomfortable.",
+            "Always make those above you feel comfortably superior.",
+            "The next time someone pushes you and you find yourself starting to react, try this: Do not resist or fight back, but yield.",
+            "When you are trying to impress people with words, the more you say, the more common you appear, and the less in control. Even if you are saying something banal, it will seem original if you make it vague, open-ended, and sphinxlike. Powerful people impress and intimidate by saying less. The more you say, the more likely you are to say something foolish.",
+            "Remember the following: Never take your position for granted and never let any favors you receive go to your head.",
+            "Periodically change up routines, surprise the group with something new or challenging. This will wake them up and stir them out of the complacency that can settle into any group that achieves success.",
+            "We think we are judging the younger generation in an objective manner, but we are merely succumbing to an illusion of perspective. It is also true that we are probably experiencing some hidden envy of their youth and mourning the loss of our own.",
+            "In knowing yourself, you accept your limits. You are simply one person among many in the world, and not naturally superior to anyone.",
+            "Emotions are continually affecting our thought processes and decisions, below the level of our awareness. And the most common emotion of them all is the desire for pleasure and the avoidance of pain.",
+            "Create the proper first impression. It has been demonstrated how much people tend to judge based on first impressions and the difficulties they have in reassessing these judgments.",
+            "To imagine that we are not always in control of what we do is a frightening thought, but in fact it is the reality. We are subject to forces from deep within us that drive our behavior and that operate below the level of our awareness.",
+            "We are all narcissists, some deeper on the spectrum than others. Our mission in life is to come to terms with this self-love and learn how to turn our sensitivity outward, toward others, instead of inward.",
+            "In a world full of endless distractions, you must focus and prioritize.",
+            "This feeling of being lost and confused is not anyone’s fault. It is a natural reaction to having been born into times of great change and chaos. The old support systems of the past—religions, universal causes to believe in, social cohesion—have mostly disappeared, at least in the Western world. Disappearing also are the elaborate conventions, rules, and taboos that once channeled behavior. We are all cast adrift, and it is no wonder that so many people lose themselves in addictions and depression.",
+            "False purposes lead downward, to the animal side of our nature—to addictions, loss of mental powers, mindless conformity, and cynicism.",
+            "Love, friendship, respect do not unite people as much as common hatred for something.",
+            "The true spirit of conversation consists more in bringing out the cleverness of others than in showing a great deal of it yourself; he who goes away pleased with himself and his own wit is also greatly pleased with you.",
+            "Demagogues in politics or the media try to stir a continual sense of panic, urgency, and outrage. They must keep the emotional levels high. Your defense is simple: Consider your reasoning powers, your ability to think for yourself, your most precious possession. Resent any kind of intrusion upon your independent mind by others. When you feel you are in the presence of a demagogue, become doubly wary and analytical.",
+            "Reading and thinking about [new ideas] won't work. You must put them into effect.",
+            "Think of the mind as a river: the faster it flows, the better it keeps up with the present and responds to change. The faster it flows, also the more it refreshes itself and the greater its energy. Obsessional thoughts, past experiences (whether traumas or successes), and preconceived notions are like boulders or mud in this river, settling and hardening there and damming it up. The river stops moving; stagnation sets in. You must wage constant war on this tendency in the mind.",
+            "Dreaming first of what you want and then trying to find the means to reach it is a recipe for exhaustion, waste, and defeat.",
+            "Do not find yourself constantly retreating, reacting to your enemies’ maneuvers. Arm yourself with prudence, and never completely lay down your arms, not even for friends.",
+            "If you have never been willing to fight back before, no threatening gesture you make will be credible.",
+            "What you know must translate into action, and action must translate into knowledge. In this way, strategy becomes a lifelong challenge and the source of constant pleasure in surmounting difficulties and solving problems.",
+            "Instead of internalizing a bad situation, externalize it and face your enemy. It is the only way out.",
+            "Being attacked is a sign that you are important enough to be a target.",
+            "The world is ruled by necessity: People change their behavior only if they have to. They will feel urgency only if their lives depend on it.",
+            "It’s not what you have that brings you victory, it’s how you use it. When you have less, you are naturally more inventive.",
+            "The leader who tries to change the group’s spirit directly—yelling, demanding, disciplining—actually plays into the teenage dynamic and reinforces the desire to rebel.",
+            "Your enemies, those you stand sharply against, will help you to forge a support base that will not desert you. Do not crowd into the center, where everyone else is; there is no room to fight in a crowd. Polarize people, drive some of them away, and create a space for battle.",
+            "The more we lose ourselves in predigested theories and past experiences, the more inappropriate and delusional our response.",
+            "In life you must be a warrior, and war requires realism. While others may find beauty in endless dreams, warriors find it in reality, in awareness of limits, in making the most of what they have.",
+            "If you feel lost and confused, if you lose your sense of direction, if you cannot tell the difference between friend and foe, you have only yourself to blame.",
+            "What’s something you’ve always felt a pull toward? Dive deep into it today.",
+            "Your first task as a strategist is to widen your concept of the enemy, to include in that group those who are working against you, thwarting you, even in subtle ways.",
+            "Being more careful is not what we need; that is just a screen for our fear of conflict and of making a mistake. What we need is double the resolve—an intensification of confidence. That will serve as a counterbalance.",
+            "Do not be lured by the need to be liked: better to be respected, even feared. Victory over your enemies will bring you a more lasting popularity.",
+            "Think back on the moments when you felt deeply and personally connected to an activity. Think about the pleasure it brought you. In such activities are signs of your true purpose.",
+            "Operating with long-term goals will bring you tremendous clarity and resolve.",
+            "Practical knowledge is the ultimate commodity. Evaluate opportunities using one criterion: the greatest possibility for learning.",
+            "Learning how to learn is the most important skill to acquire.",
+            "Reminder: Act boldly on one of your ideas today.",
+            "Everything worth doing has a learning curve. When it gets hard, remember the goal: reaching the cycle of accelerated returns.",
+            "It is the height of stupidity to believe that in the course of your short life, your few decades of consciousness, you can somehow rewire the configurations of your brain through technology and wishful thinking, overcoming the effect of six million years of development.",
+            "Find the deepest pleasure in absorbing knowledge and information. Feel like you never have enough.",
+            "Make a list of the people in your life who live with purpose. Prioritize spending more time with them.",
+            "Reading books and materials that go beyond what is required is always a good starting point. Being exposed to ideas in the wide world, you will tend to develop a hunger for more and more knowledge.",
+            "Try the thing you don’t think you’re quite ready for.",
+            "In dealing with any problem, you must train yourself to look at how it inevitably connects to a larger picture.",
+            "Do not waste time on things you cannot change or influence.",
+            "To negate the ego you must adopt a kind of humility toward knowledge.",
+            "Knowledge is always progressing. Don’t let your ego fool you. You are always knowledge’s inferior.",
+            "Immersing yourself in details will combat the generalizing tendencies of the brain and bring you closer to reality.",
+            "The more skills you learn, the richer the landscape of the brain. It’s up to you.",
+            "Petulance is not power, it is a sign of helplessness. People may temporarily be cowed by your tantrums, but in the end they lose respect for you. They also realize they can easily undermine a person with so little self-control.",
+            "What has worth is worth paying for. By paying your own way you stay clear of gratitude, guilt, and deceit. It is also often wise to pay the full price—there is no cutting corners with excellence.",
+            "When choosing people to work and associate with, do not be mesmerized by their reputation or taken in by the surface image they try to project. Instead, train yourself to look deep within them, to their past actions, to see their character.",
+            "Being self-reliant is critical. To make yourself less dependent on others and so-called experts, you need to expand your repertoire of skills.",
+            "Like a builder, develop the highest standards, and the patience for the step-by-step process.",
+            "In order to master a field, you must love the subject and feel a profound connection to it. Your interest must transcend the field and border on the religious.",
+            "Being ourselves and just saying what we think can land us in all kinds of trouble. We come to realize that the work world is riddled with political games that nobody has prepared us for.",
+            "Strive to be the only one who can do what you do and make the fate of those who hire you so entwined with yours that they cannot possibly get rid of you.",
+            "Concentrate on maintaining a high sense of purpose, and the success will flow to you naturally.",
+            "Feeling energized influences our mood, which influences our work in very direct ways. And feeling confused or disorganized in our work can have a terrible effect on us physically as well.",
+            "What you need is a mental filtering system based on a scale of priorities and your long-term goals.",
+            "No calling is superior to another. What matters is that it be tied to a personal need and inclination, and that your energy moves you toward improvement and continuous learning from experience.",
+            "Embrace your strangeness. Identify what makes you different. Fuse those things together and become an anomaly.",
+            "The single greatest action you can take for acquiring creative power is to reverse this natural impatience. Imagine yourself years in the future looking back at the work you have done.",
+            "Always remember that your calmness under fire is your best defense in any argument or discussion.",
+            "We do not see people as they are, but as they appear to us. And these appearances are usually misleading.",
+            "Stop listening so much to the words and opinions of others, telling you who you are and what you should like and dislike.",
+            "Operating with long-term goals will bring you tremendous clarity and resolve.",
+            "Knowing in a deep way who you are, your uniqueness, will make it that much easier to avoid all of life’s other pitfalls.",
+            "Everything worth doing has a learning curve. When it gets hard, remember the goal: reaching the cycle of accelerated returns.",
+            "Masters manage to blend the two—discipline and a childlike spirit—together into what we shall call the Dimensional Mind. Such a mind is not constricted by limited experience or habits. It can branch out into all directions and make deep contact with reality. It can explore more dimensions of the world. The Conventional Mind is passive—it consumes information and regurgitates it in familiar forms. The Dimensional Mind is active, transforming everything it digests into something new and original, creating instead of consuming.",
+            "To rise to the level of mastery requires many hours of dedicated focus and practice. You cannot get there if your work brings you no joy and you are constantly struggling to overcome your own weaknesses. You must look deep within and come to an understanding of these particular strengths and weaknesses you possess, being as realistic as possible. Knowing your strengths, you can lean on them with utmost intensity. Once you start in this direction, you will gain momentum. You will not be burdened by conventions, and you will not be slowed down by having to deal with skills that go against your inclinations and strengths. In this way, your creative and intuitive powers will be naturally awakened.",
+            "The first move toward mastery is always inward—learning who you really are and reconnecting with that innate force. Knowing it with clarity, you will find your way to the proper career path and everything else will fall into place. It is never too late to start this process.",
+            "Your true self does not speak in words or banal phrases. Its voice comes from deep within you, from the substrata of your psyche, from something embedded physically within you. It emanates from your uniqueness, and it communicates through sensations and powerful desires that seem to transcend you. You cannot ultimately understand why you are drawn to certain activities or forms of knowledge. This cannot really be verbalized or explained. It is simply a fact of nature. In following this voice, you realize your own potential and satisfy your deepest longings to create and express your uniqueness. It exists for a purpose, and it is your Life’s Task to bring it to fruition.",
+            "Do not waste time on things you cannot change or influence. Just keep moving.",
+            "Aggression is deceptive: it inherently hides weakness. Aggressors cannot control their emotions.",
+            "Great strategists do not act according to preconceived ideas; they respond to the moment, like children. Their minds are always moving, and they are always excited and curious. They quickly forget the past—the present is much too interesting.",
+            "The only way to break out of a negative dynamic is to confront it. Repressing your anger, avoiding the person threatening you, always looking to conciliate—these common strategies spell ruin. Avoidance of conflict becomes a habit, and you lose the taste for battle. Feeling guilty is pointless; it is not your fault you have enemies.",
+            "Your wealth vanishes, the latest gadgetry suddenly becomes passé, your allies desert you. But if your mind is armed with the art of war, there is no power that can take that away.",
+            "Instead of wasting time negotiating with every difficult person, work on spreading a spirit of camaraderie and efficiency that becomes self-policing. Streamline the organization, cutting out waste—in staff, in the irrelevant reports on your desk, in pointless meetings.",
+            "Instead of trying to dominate the other side’s every move, work to define the nature of the relationship itself.",
+            "Making money or being successful should be a natural result of this ideal and not the goal itself.",
+            "Mistakes and failures are precisely your means of education. They tell you about your own inadequacies.",
+            "The secret to success is retaining your child-like qualities.",
+            "Boldness makes even the smallest animal dangerous.",
+            "Keep your friends for friendship, but work with the skilled and competent.",
+            "Mastery is not a function of genius or talent, it is a function of time and intense focus applied to a particular field of knowledge.",
+            "We must create our own world or we will die from inaction.",
+            "Life goes by very fast. And the worst thing in life that you can have is a job that you hate, and have no energy and creativity in.",
+            "Make your accomplishments seem effortless.",
+            "The time that leads to mastery is dependent on the intensity of our focus.",
+            "Understand: people will constantly attack you in life. One of their main weapons will be to instill in you doubts about yourself.\"",
+            "You must create a sense of urgency and desperation.",
+            "The pain that you are afraid of is a part of the process. You have to learn to embrace it as part of your growth.",
+            "Never assume that the person you are dealing with is weaker or less important than you are.",
+            "When you show yourself to the world and display your talents, you naturally stir all kinds of resentment, envy, and other manifestations of insecurity...you cannot spend your life worrying about the petty feelings of others.",
+            "You cannot spend your life worrying about the petty feelings of others.",
+            "Be like vapor. Do not give your opponents anything solid to attack; watch as they exhaust themselves pursuing you, trying to cope with your elusiveness. Only formlessness allows you to truly surprise your enemies — by the time they figure out where you are and what you are up to, it is too late.",
+            "Concentrate on a single goal, a single task, and beat it into submission.",
+            "While a friend expects more and more favors, and seethes with jealousy, these former enemies expected nothing and got everything. A man suddenly spared the guillotine is a grateful man indeed, and will go to the ends of the earth for the man who has pardoned him.",
+            "Easy victories enhance morale, develop your reputation, give you momentum, and, most important, do not cost you much.",
+            "Trust your instincts: if someone’s behavior seems suspicious, it probably is. It may turn out to be benign, but in the meantime it is best to be on your guard.",
+            "If you have never been willing to fight back before, no threatening gesture you make will be credible.",
+            "Learn to use the knowledge of the past and you will look like a genius, even when you are really just a clever borrower.",
+            "Learn the lesson: Once the words are out, you cannot take them back. Keep them under control. Be particularly careful with sarcasm: The momentary satisfaction you gain with your biting words will be outweighed by the price you pay.",
+            "Those who make a show or display of innocence are the least innocent of all.",
+            "What matters is not education or money, but your persistence and the intensity of your desire to learn; that failures, mistakes, and conflicts are often the best education of all; and how true creativity and mastery emerge from all this.",
+            "Always stick to what makes you weird, odd, strange, different. That’s your source of power.",
+            "Stop listening so much to the words and opinions of others, telling you who you are and what you should like and dislike.",
+            "Knowing in a deep way who you are, your uniqueness, will make it that much easier to avoid all of life’s other pitfalls.",
+            "Learning how to learn is the most important skill to acquire.",
+            "Everything worth doing has a learning curve. When it gets hard, remember the goal: reaching the cycle of accelerated returns.",
+            "It is the height of stupidity to believe that in the course of your short life, your few decades of consciousness, you can somehow rewire the configurations of your brain through technology and wishful thinking, overcoming the effect of six million years of development.",
+            "Make a list of the people in your life who live with purpose. Prioritize spending more time with them.",
+            "Find the deepest pleasure in absorbing knowledge and information. Feel like you never have enough.",
+            "Reading books and materials that go beyond what is required is always a good starting point. Being exposed to ideas in the wide world, you will tend to develop a hunger for more and more knowledge.",
+            "In dealing with any problem, you must train yourself to look at how it inevitably connects to a larger picture.",
+            "Rituals and routines create an artificial pace to life. They mimic patterns in nature, the seasons, and the recurrence of day into night. People sometimes view routines or habits in a negative way, “Wouldn’t it be great to be so free, to do whatever you want.” To me that’s like hell, like a nightmare. I would hate that. I want life to be relatively simple and digestible. Maybe that’s a weakness on my part. To me, routines and rituals are very liberating and soothing. I can’t imagine life without them.",
+            "Do not waste time on things you cannot change or influence.",
+            "Knowledge is always progressing. Don’t let your ego fool you. You are always knowledge’s inferior.",
+            "Creating anything worthwhile is like a marathon, and you must train for it.",
+            "The more skills you learn, the richer the landscape of the brain. It’s up to you.",
+            "Petulance is not power, it is a sign of helplessness. People may temporarily be cowed by your tantrums, but in the end they lose respect for you. They also realize they can easily undermine a person with so little self-control.",
+            "What has worth is worth paying for. By paying your own way you stay clear of gratitude, guilt, and deceit. It is also often wise to pay the full price—there is no cutting corners with excellence.",
+            "What you want is a picture of a person’s character over time. Restrain from the natural tendency to judge right away, and let the passage of time reveal more and more about who people are.",
+            "When choosing people to work and associate with, do not be mesmerized by their reputation or taken in by the surface image they try to project. Instead, train yourself to look deep within them, to their past actions, to see their character.",
+            "Too many people believe that everything must be pleasurable in life, which makes them constantly search for distractions and short-circuits the learning process. The pain is a kind of challenge your mind presents - will you learn how to focus and move past the boredom, or like a child will you succumb to the need for immediate pleasure and distraction? Much as with physical exercise, you can even get a kind of perverse pleasure out of this pain, knowing the benefits it will bring you. In any event, you must meet any boredom head-on and not try to avoid or repress it. Throughout your life you will encounter tedious situations, and you must cultivate the ability to handle them with discipline.",
+            "Establishing your differences with the mentor is an important part of your self-development, whether he is of the good or bad parent type.",
+            "You must value learning above everything else.",
+            "When you are faced with deficiencies instead of strengths and inclinations, this is the strategy you must assume: ignore your weaknesses and resist the temptation to be more like others.",
+            "In order to master a field, you must love the subject and feel a profound connection to it.",
+            "If it is money, you will choose a place for your apprenticeship that offers the biggest paycheck. Inevitably, in such a place you will feel greater pressures to prove yourself worthy of such pay, often before you are really ready.",
+            "Do not envy those who seem to be naturally gifted; it is often a curse, as such types rarely learn the value of diligence and focus, and they pay for this later in life.",
+            "What offers immediate pleasure comes to seem like a distraction, an empty entertainment to help pass the time. Real pleasure comes from overcoming challenges, feeling confidence in your abilities, gaining fluency in skills, and experiencing the power this brings.",
+            "The best way to neutralize our natural impatience is to cultivate a kind of pleasure in pain - like an athlete, you come to enjoy rigorous practice, pushing past your limits, and resisting the easy way out.",
+            "Our levels of desire, patience, persistence, and confidence end up playing a much larger role in success than sheer reasoning powers.",
+            "Take special note of how people respond to stressful situations - often the mask they wear in public falls off in the heat of the moment.",
+            "The pain is a kind of challenge your mind presents - will you learn how to focus and move past boredom, or like a child will you succumb to the need for immediate pleasure and distraction?",
+            "Confidence is important, but if it is not based on a realistic appraisal of who you are, it is mere grandiosity and smugness.",
+            "To help yourself to cultivate serendipity, you should keep a notebook with you at all times. The moment any idea or observation comes, you note it down. You keep the notebook by your bed, careful to record ideas that come in those moments of fringe awareness—just before falling asleep, or just upon waking.",
+            "The need for certainty is the greatest disease the mind faces.",
+            "Most people don't have the patience to absorb their minds in the fine points and minutiae that are intrinsically part of their work. They are in a hurry to create effects and make a splash; they think in large brush strokes. Their work inevitably reveals their lack of attention to detail - it doesn't connect deeply with the public, and it feels flimsy.",
+            "At your birth a seed is planted. That seed is your uniqueness. It wants to grow, transform itself, and flower to its full potential. It has a natural, assertive energy to it. Your Life's Task is to bring that seed to flower, to express your uniqueness through your work. You have a destiny to fulfill. The stronger you feel and maintain it--as a force, a voice or in whatever form-- the greater your chance of fulfilling this Life's Task and achieving mastery.",
+            "The truth is that creative activity is one that involves the entire self - our emotions, our levels of energy, our characters, and our minds.",
+            "The key to attaining a higher level of intelligence is to make our years of study qualitatively rich. We don't simply absorb information - we internalize it and make it our own by finding some way to put this knowledge to practical use.",
+            "Feeling angry and sorry for ourselves, or we opt for distractions and quick ways to dull the pain. This becomes a habit we cannot shake, and we tend to feel the generalized anxiety and emptiness that come from all this avoidance.",
+            "So often we think that power has changed people, when in fact it simply reveals more of who they are.",
+            "In knowing yourself, you accept your limits. You are simply one person among many in the world, and not naturally superior to anyone.",
+            "We want to learn the lesson and not repeat the experience. But in truth, we do not like to look too closely at what we did; our introspection is limited. Our natural response is to blame others, circumstances, or a momentary lapse of judgment.",
+            "\"If you come across any special trait of meanness or stupidity . . . you must be careful not to let it annoy or distress you, but to look upon it merely as an addition to your knowledge—a new fact to be considered in studying the character of humanity. Your attitude towards it will be that of the mineralogist who stumbles upon a very characteristic specimen of a mineral.\" —Arthur Schopenhauer",
+            "You cannot repress anger or love, or avoid feeling them, and you should not try.",
+            "If no resistances or obstacles face you, you must create them. No seduction can proceed without them.",
+            "Our natural tendency is to project onto other people our own belief and value systems, in ways in which we are not even aware.",
+            "Most people are perpetually locked in the present. Their decisions are overly influenced by the most immediate event; they easily become emotional and ascribe greater significance to a problem than it should have in reality.",
+            "Those qualities that separate us are often ridiculed by others or criticized by teachers. Because of these judgments, we might see our strengths as disabilities and try to work around them in order to fit in. But anything that is peculiar to our makeup is precisely what we must pay the deepest attention to and lean on in our rise to mastery.",
+            "What if we could find out what causes us to lie about who we are, or to inadvertently push people away?",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "If you allow yourself to learn who you really are by paying attention to that voice and force within you, then you can become what you were fated to become—an individual, a Master.",
+            "Fear creates its own self-fulfilling dynamic- as people give into it, they lose energy and momentum. Their lack of confidence translates into inaction that lowers confidence levels even further, on and on",
+            "Creativity is a combination of discipline and childlike spirit.",
+            "When you turn your back on someone, they come running after you.",
+            "Be a flame of positive emotions and you will never be without a friend.",
+            "Your mind is the starting point of all war and all strategy. A mind that is easily overwhelmed by emotion, that is rooted in the past instead of the present, that cannot see the world with clarity and urgency, will create strategies that will always miss the mark.",
+            "No one is really going to help you or give you direction. In fact, the odds are against you.",
+            "When our emotions are engaged, we often have trouble seeing things as they are.",
+            "There is nothing more intoxicating than victory, and nothing more dangerous.",
+            "The future belongs to those who learn more skills and combine them in creative ways.",
+            "Never waste valuable time, or mental peace of mind, on the affairs of others—that is too high a price to pay.",
+            "Never assume that the person you are dealing with is weaker or less important than you are. Some people are slow to take offense, which may make you misjudge the thickness of their skin, and fail to worry about insulting them. But should you offend their honor and their pride, they will overwhelm you with a violence that seems sudden and extreme given their slowness to anger. If you want to turn people down, it is best to do so politely and respectfully, even if you feel their request is impudent or their offer ridiculous.",
+            "Making money or being successful should be a natural result of this ideal and not the goal itself.",
+            "When people overtly display some trait, such as confidence or hypermasculinity, they are most often concealing the contrary reality.",
+            "You are like a hunter: your knowledge of every detail of the forest and of the ecosystem as a whole will give you many more options for survival and success.",
+            "If everything in a dream were realistic, it would have no power over us; if everything were unreal, we would feel less involved in its pleasures and fears. Its fusion of the two is what makes it haunting.",
+            "To negate the ego you must adopt a kind of humility toward knowledge.",
+            "Knowledge is always progressing. Don’t let your ego fool you. You are always knowledge’s inferior.",
+            "Creating anything worthwhile is like a marathon, and you must train for it.",
+            "Immersing yourself in details will combat the generalizing tendencies of the brain and bring you closer to reality.",
+            "Most people don’t have the patience to absorb their minds in the fine points and minutiae that are intrinsically part of their work. They are in a hurry to create effects and make a splash; they think in large brush strokes. Their work inevitably reveals their lack of attention to detail.",
+            "The more skills you learn, the richer the landscape of the brain. It’s up to you.",
+            "Petulance is not power, it is a sign of helplessness. People may temporarily be cowed by your tantrums, but in the end they lose respect for you. They also realize they can easily undermine a person with so little self-control.",
+            "What has worth is worth paying for. By paying your own way you stay clear of gratitude, guilt, and deceit. It is also often wise to pay the full price—there is no cutting corners with excellence.",
+            "What you want is a picture of a person’s character over time. Restrain from the natural tendency to judge right away, and let the passage of time reveal more and more about who people are.",
+            "The greatest danger you face is your general assumption that you really understand people and that you can quickly judge them. Instead, you must begin with the assumption that you are ignorant and that you have natural biases that will make you judge people incorrectly. Each person you meet is like an undiscovered country, with a very particular psychological chemistry that you will carefully explore.",
+            "Never take it for granted that your past successes will continue in the future. Actually, your past successes are your biggest obstacle: every battle, every war, is different, and you cannot assume that what worked before will work today.",
+            "You may have brilliant ideas, the kind that could revolutionize the world, but unless you can express them effectively, they will have no force, no power to enter people’s minds in a deep and lasting way.",
+            "If you work hard, you will make your way to the inner circle of knowledge. That is the end goal of mastery: an inside-out understanding.",
+            "The moment that you rest, thinking that you have attained the level you desire, a part of your mind enters a phase of decay.",
+            "What matters is not education or money, but your persistence and the intensity of your desire to learn; that failures, mistakes, and conflicts are often the best education of all; and how true creativity and mastery emerge from all this.",
+            "Always stick to what makes you weird, odd, strange, different. That’s your source of power.",
+            "Think back on the moments when you felt deeply and personally connected to an activity. Think about the pleasure it brought you. In such activities are signs of your true purpose.",
+            "Operating with long-term goals will bring you tremendous clarity and resolve.",
+            "Examine the faults you see in others and how they are in you as well.",
+            "We cannot separate this aggressiveness from the way we attack problems, alter the environment to make our lives easier, fight injustice, or create anything on a large scale.",
+            "Knowing what you want to accomplish in the end will help you weed out the essential from the nonessential.",
+            "Remember that greater control over events will come from realistic assessments of the situation, precisely what is made most difficult by a brain submerged in trivia.",
+            "Your task is to let go of the rigidity that takes hold of you as you overidentify with the expected gender role. Power lies in exploring that middle range between the masculine and the feminine, in playing against people’s expectations.",
+            "Return to the harder or softer sides of your character that you have lost or repressed.",
+            "When it comes to the ideas and opinions you hold, see them as toys or building blocks that you are playing with. Some you will keep, others you will knock down, but your spirit remains flexible and playful.",
+            "Develop the habit of examining in depth your own emotional responses. You will end up slowly eliminating unnecessary reactions.",
+            "Rationality is something to be acquired by individuals, not by mass movements or technological progress. Feeling superior and beyond it is a sure sign that the irrational is at work.",
+            "The human mind naturally freezes the relentless passage of time by presenting us with static images of people, our culture, and our own self-identity. But if we were truly sensitive to evolution, we would realize these are only passing shadows in a world of ceaseless flux.",
+            "Every minute of every day we are aging; every encounter with others alters and shapes our ideas; we are a continuous work in progress, never quite the same. As Heraclitus once said, “You cannot step into the same river twice; it is not the same river, and you are not the same person.",
+            "Let go of the past and feel yourself carried along by the stream of life and all the power and energy that it will bring us in its wake.",
+            "Contemplate any feelings of uncertainty and even discomfort and hold fast to them. Amid such uncertainty your dormant sense of wonder will begin to stir, and things will start to appear novel and surprising as they did when you were very young.",
+            "Mastery is a process and discovering your calling is the starting point.",
+            "Do something today that you used to love doing as a kid. Try to reconnect with your impulse voices.",
+            "Ask someone who recalls your childhood what they remember about your interests. Get reacquainted with those early passions.",
+            "What’s something you’ve always felt a pull toward? Dive deep into it today.",
+            "You do not hold on to past ways of doing things, because that will ensure you will fall behind and suffer for it. You are flexible and always looking to adapt.",
+            "Like everyone, you think you are rational, but you are not. Rationality is not a power you are born with but one you acquire through training and practice.",
+            "Feeling superior is a sure sign that the irrational is at work.",
+            "Your goal in life must be to always move higher and higher up the food chain, where you alone control the direction of your enterprise and depend on no one.",
+            "Fears are a kind of prison that confines you within a limited range of action. The less you fear, the more power you will have and the more fully you will live.",
+            "The knife’s edge that separates failure from success in life. That edge is your attitude, which has the power to help shape your reality.",
+            "Events in life are not negative or positive. They are completely neutral. The universe does not care about your fate; it is indifferent to the violence that may hit you or to death itself. Things merely happen to you. It is your mind that chooses to interpret them as negative or positive.",
+            "Now is the time to stop drifting and wake up—to assess yourself, the people around you, and the direction in which you are headed in as cold and brutal a light as possible. Without fear.",
+            "Every negative is a positive. The bad things that happen to me, I somehow make them good. That means you can’t do anything to hurt me.",
+            "What separates those who go under and those who rise above adversity is the strength of their will and their hunger for power.",
+            "Fear creates its own self-fulfilling dynamic- as people give into it, they lose energy and momentum. Their lack of confidence translates into inaction that lowers confidence levels even further, on and on.",
+            "Reality has its own power—you can turn your back on it, but it will find you in the end, and your inability to cope with it will be your ruin.",
+            "If you view everything through the lens of fear, then you tend to stay in retreat mode. You can just as easily see a crisis or problem as a challenge, an opportunity to prove your mettle, the chance to strengthen and toughen yourself, or a call to collective action. By seeing it as a challenge, you will have converted this negative into a positive purely by a mental process that will result in positive action as well.",
+            "People will constantly attack you in life. One of their main weapons will be to instill in you doubts about yourself – your worth, your abilities, your potential. They will often disguise this as their objective opinion, but invariably it has a political purpose – they want to keep you down.",
+            "Being attacked is a sign that you are important enough to be a target. You should relish the attention and the chance to prove yourself.",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "Your mind is the starting point of all war and all strategy. A mind that is easily overwhelmed by emotion, that is rooted in the past instead of the present, that cannot see the world with clarity and urgency, will create strategies that will always miss the mark.",
+            "When you have success, be extra wary. When you are angry, take no action. When you are fearful, know you are going to exaggerate the dangers you face.",
+            "The greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end. You must declare unceasing war on yourself.",
+            "It is your own bad strategies, not the unfair opponent, that are to blame for your failures. You are responsible for the good and bad in your life.",
+            "Events in life mean nothing if you do not reflect on them in a deep way, and ideas from books are pointless if they have no application to life as you live it.",
+            "When you are trying to impress people with words, the more you say, the more common you appear, and the less in control. Even if you are saying something banal, it will seem original if you make it vague, open-ended, and sphinxlike. Powerful people impress and intimidate by saying less. The more you say, the more likely you are to say something foolish.",
+            "Real pleasure comes from overcoming challenges, feeling confidence in your abilities, gaining fluency in skills, and experiencing the power this brings.",
+            "Feeling bored and restless, our minds shut off and we become increasingly passive.",
+            "The great danger is that we give in to feelings of boredom, impatience, fear, and confusion. We stop observing and learning. The process comes to a halt.",
+            "Ignore your weaknesses and resist the temptation to be more like others.",
+            "Conforming to social norms, you will listen more to others than to your own voice.",
+            "The environment we operate in may be different, but the brain is essentially the same, and its power to learn, adapt, and master time is universal.",
+            "The more we lose ourselves in predigested theories and past experiences, the more inappropriate and delusional our response.",
+            "Being more careful is not what we need; that is just a screen for our fear of conflict and of making a mistake. What we need is double the resolve—an intensification of confidence. That will serve as a counterbalance.",
+            "Do not be lured by the need to be liked: better to be respected, even feared. Victory over your enemies will bring you a more lasting popularity.",
+            "If you want to make people with low self esteem feel better about themselves, praise has a superficial effect. Instead prod them into accomplishing something tangible, giving them a real experience. That will translate into a much deeper feeling of confidence.",
+            "Reading and thinking about [new ideas] won't work. You must put them into effect.",
+            "Dreaming first of what you want and then trying to find the means to reach it is a recipe for exhaustion, waste, and defeat.",
+            "Trust your instincts: if someone’s behavior seems suspicious, it probably is. It may turn out to be benign, but in the meantime it is best to be on your guard.",
+            "If you have never been willing to fight back before, no threatening gesture you make will be credible.",
+            "Instead of trying to dominate the other side’s every move, work to define the nature of the relationship itself.",
+            "When you have success, be extra wary. When you are angry, take no action. When you are fearful, know you are going to exaggerate the dangers you face.",
+            "It is your own bad strategies, not the unfair opponent, that are to blame for your failures. You are responsible for the good and bad in your life.",
+            "Events in life mean nothing if you do not reflect on them in a deep way, and ideas from books are pointless if they have no application to life as you live it.",
+            "Learn to destroy your enemies by opening holes in their own reputations. Then stand aside and let public opinion hang them.",
+            "Too much respect for other people's wisdom will make you depreciate your own.",
+            "Sometimes any emotion is better than the boredom of security.",
+            "You cannot repress anger or love, or avoid feeling them, and you should not try.",
+            "Everyone admires the bold; no one honors the timid.",
+            "Any man who tries to be good all the time is bound to come to ruin among the great number who are not good.",
+            "Never take your position for granted and never let any favors you receive go to your head.",
+            "Everyone has a thumbscrew, a gap in the castle wall. Once found, it is a thumbscrew you can turn to your advantage.",
+            "Without enemies around us, we grow lazy. An enemy at our heels sharpens our wits, keeping us focused and alert. It is sometimes better, then, to use enemies as enemies rather than transforming them into friends or allies.",
+            "Hide your intentions not by closing up (with the risk of appearing secretive, and making people suspicious) but by talking endlessly about your desires and goals-just not the real ones.",
+            "Power is a game, and in games you do not judge your opponents by their intentions but by the effects of their actions.",
+            "Do not wait for a coronation; the greatest emperors crown themselves.",
+            "Anger is the most destructive of emotional responses, for it clouds your vision the most.",
+            "Power goes to those who end the revolution. Not the one who starts it.",
+            "Instead of spending your time dreaming of your plan’s happy ending, you must work on calculating every possible permutation and pitfall that might emerge in it.",
+            "You cannot spend your life worrying about the petty feelings of others",
+            "If you have the kind of intelligence and instinct that will point you in the right direction, playing the rebel will not be dangerous. But if you are mediocre, you are better off learning from your predecessor's knowledge and experience, which are based on something real.",
+            "Concentrate on a single goal, a single task, and beat it into submission.",
+            "Learning how to learn is the most important skill to acquire.",
+            "Everything worth doing has a learning curve. When it gets hard, remember the goal: reaching the cycle of accelerated returns.",
+            "Knowledge is always progressing. Don’t let your ego fool you. You are always knowledge’s inferior.",
+            "Creating anything worthwhile is like a marathon, and you must train for it.",
+            "Immersing yourself in details will combat the generalizing tendencies of the brain and bring you closer to reality",
+            "The more skills you learn, the richer the landscape of the brain.",
+            "Petulance is not power, it is a sign of helplessness. People may temporarily be cowed by your tantrums, but in the end they lose respect for you. They also realize they can easily undermine a person with so little self-control.",
+            "Never take it for granted that your past successes will continue in the future. Actually, your past successes are your biggest obstacle: every battle, every war, is different, and you cannot assume that what worked before will work today.",
+            "If you work hard, you will make your way to the inner circle of knowledge. That is the end goal of mastery: an inside-out understanding.",
+            "You may have brilliant ideas, the kind that could revolutionize the world, but unless you can express them effectively, they will have no force, no power to enter people’s minds in a deep and lasting way.",
+            "Repeated failure will toughen your spirit and show you with absolute clarity how things must be done. In fact, it is a curse to have everything go right on your first attempt. You will fail to question the element of luck, making you think that you have the golden touch. When you do inevitably fail, it will confuse and demoralize you past the point of learning.",
+            "Power is a human creation, it is inevitably increased by contact with other people.",
+            "The moment that you rest, thinking that you have attained the level you desire, a part of your mind enters a phase of decay.",
+            "Displaying anger and emotion are signs of weakness; you cannot control yourself, so how can you control anything?",
+            "What matters is not education or money, but your persistence and the intensity of your desire to learn; that failures, mistakes, and conflicts are often the best education of all; and how true creativity and mastery emerge from all this.",
+            "Always stick to what makes you weird, odd, strange, different. That’s your source of power.",
+            "Stop listening so much to the words and opinions of others, telling you who you are and what you should like and dislike.",
+            "When in doubt, focus on the things you know you do well. Expand outward from the center.",
+            "You are one of a kind. Your combination of skills and experience is not replicable. That represents true freedom and the ultimate power we humans can possess.",
+            "To make a discovery, to invent something that connects with the public, to fashion a work of art that is meaningful, inevitably requires time and effort. This often entails years of experimentation, various setbacks and failures, and the need to maintain a high level of focus. You must have patience and faith that what you are doing will yield something important.",
+            "You must alter your very concept of creativity and try to see it from a new angle. Most often, people associate creativity with something intellectual, a particular way of thinking. The truth is that creative activity is one that involves the entire self—our emotions, our levels of energy, our characters, and our minds.",
+            "Work at what connects to you emotionally and ideas will come to you.",
+            "Keep in mind that power lies in asserting your uniqueness, even if that offends some people along the way.",
+            "Do not be afraid to exaggerate the role of willpower. It is an exaggeration with a purpose. It leads to a positive self-fulfilling dynamic, and that is all you care about. See this shaping of your attitude as your most important creation in life, and never leave it to chance.",
+            "Do not swallow the easy moralism of the day, which urges honesty at the expense of desirability.",
+            "We have a continual desire to communicate our feelings and yet at the same time the need to conceal them for proper social functioning.",
+            "We tend to think of our behavior as largely conscious and willed. To imagine that we are not always in control of what we do is a frightening thought, but in fact it is the reality.",
+            "Making money or being successful should be a natural result of this ideal and not the goal itself.",
+            "Fear creates its own self-fulfilling dynamic- as people give into it, they lose energy and momentum. Their lack of confidence translates into inaction that lowers confidence levels even further, on and on.",
+            "Creativity is a combination of discipline and childlike spirit.",
+            "Never waste valuable time or mental peace of mind on the affairs of others - that is too high a price to pay.",
+            "Return to the harder or softer sides of your character that you have lost or repressed.",
+            "When it comes to the ideas and opinions you hold, see them as toys or building blocks that you are playing with. Some you will keep, others you will knock down, but your spirit remains flexible and playful.",
+            "Your task is to let go of the rigidity that takes hold of you as you overidentify with the expected gender role. Power lies in exploring that middle range between the masculine and the feminine, in playing against people’s expectations.",
+            "What matters is not education or money, but your persistence and the intensity of your desire to learn; that failures, mistakes, and conflicts are often the best education of all; and how true creativity and mastery emerge from all this.",
+            "Reading books and materials that go beyond what is required is always a good starting point. Being exposed to ideas in the wide world, you will tend to develop a hunger for more and more knowledge.",
+            "In dealing with any problem, you must train yourself to look at how it inevitably connects to a larger picture.",
+            "Do not waste time on things you cannot change or influence.",
+            "To negate the ego you must adopt a kind of humility toward knowledge.",
+            "Creating anything worthwhile is like a marathon, and you must train for it.",
+            "Immersing yourself in details will combat the generalizing tendencies of the brain and bring you closer to reality.",
+            "Most people don’t have the patience to absorb their minds in the fine points and minutiae that are intrinsically part of their work. They are in a hurry to create effects and make a splash; they think in large brush strokes. Their work inevitably reveals their lack of attention to detail.",
+            "The more skills you learn, the richer the landscape of the brain. It’s up to you.",
+            "Petulance is not power, it is a sign of helplessness. People may temporarily be cowed by your tantrums, but in the end they lose respect for you. They also realize they can easily undermine a person with so little self-control.",
+            "The truth is that everything starts from the top. What determines your failure or success is your style of leadership and the chain of command that you design.",
+            "Every day you face battles—that is the reality for all creatures in their struggle to survive. But the greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end.",
+            "Life has more meaning in the face of Death.",
+            "Being attacked is a sign that you are important enough to be a target. You should relish the attention and the chance to prove yourself.",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "When you have success, be extra wary. When you are angry, take no action. When you are fearful, know you are going to exaggerate the dangers you face.",
+            "Your mind is weaker than your emotions. But you become aware of this weakness only in moments of adversity--precisely the time when You need strength. What best equips you to cope with the heat of battle is neither more knowledge nor more intellect. What makes your mind stronger, and more able to control your emotions, is internal discipline and toughness. No one can teach you this skill; you cannot learn it by reading about it. Like any discipline, it can come only through practice, experience, and even a little suffering. The first step in building up presence of mind is to see the need for it -- to want it badly enough to be willing to work for it.",
+            "It is your own bad strategies, not the unfair opponent, that are to blame for your failures. You are responsible for the good and bad in your life.",
+            "There is too little mystery in the world; too many people say exactly what they feel or want.",
+            "Your fears are a kind of prison that confines you within a limited range of action. The less you fear, the more power you will have and the more fully you will live.",
+            "The human tongue is a beast that few can master.",
+            "In order to master a field, you must love the subject and feel a profound connection to it. Your interest must transcend the field itself and border on the religious.",
+            "Never be distracted by people’s glamorous portraits of themselves and their lives; search and dig for what really imprisons them.",
+            "An emotional response to a situation is the single greatest barrier to power, a mistake that will cost you a lot more than any temporary satisfaction you might gain by expressing your feelings.",
+            "Grand strategy is the art of looking beyond the present battle and calculating ahead. Focus on your ultimate goal and plot to reach it.",
+            "Remember: The best deceivers do everything they can to cloak their roguish qualities. They cultivate an air of honesty in one area to disguise their dishonesty in others. Honesty is merely another decoy in their arsenal of weapons.",
+            "To succeed in the game of power, you have to master your emotions. But even if you succeed in gaining such self-control, you can never control the temperamental dispositions of those around you. And this presents a great danger.",
+            "In the future, the great division will be between those who have trained themselves to handle these complexities and those who are overwhelmed by them -- those who can acquire skills and discipline their minds and those who are irrevocably distracted by all the media around them and can never focus enough to learn.",
+            "Act before it becomes impossible to disentangle one strand of misery from another, or to see how the whole thing started.",
+            "The person with the more global perspective wins. Expand your gaze.",
+            "To separate yourself from the mechanical and reactive types, you need to get rid of a common misconception: the essence of strategy is not to carry out a brilliant plan that proceeds in steps; it is to put yourself in situations where you have more options than the enemy does.",
+            "Work at what connects to you emotionally and ideas will come to you.",
+            "You cannot make anything worthwhile in this world unless you have first developed and transformed yourself.",
+            "Learn to imagine more possibilities than you generally consider. Avoid fixating only on what is present. Ponder what is absent.",
+            "Displaying anger and emotion are signs of weakness; you cannot control yourself, so how can you control anything?",
+            "Start caring less what people think of you. You will feel a tremendous sense of liberation.",
+            "Understand: we tend to overestimate other people’s abilities—after all, they’re trying hard to make it look as if they knew what they were doing—and we tend to underestimate our own.",
+            "Learning how to learn is the most important skill to acquire.",
+            "In your thinking, learn to blend the analytical with the intuitive in order to become more creative.",
+            "Always stick to what makes you weird, odd, strange, different. That’s your source of power.",
+            "Think back on the moments when you felt deeply and personally connected to an activity. Think about the pleasure it brought you. In such activities are signs of your true purpose.",
+            "The mind must not wander from goal to goal, or be distracted by success from its sense of purpose and proportion.",
+            "Skill and competence are far more important than friendly feelings.",
+            "Without a worthy opponent a man or group cannot grow stronger.",
+            "So much of power is not what you do but what you do not do—the rash and foolish actions that you refrain from before they get you into trouble.",
+            "Understand this: The world wants to assign you a role in life. And once you accept that role you are doomed.",
+            "As Nietzsche wrote, “The value of a thing sometimes lies not in what one attains with it, but in what one pays for it—what it costs us.” Perhaps you will attain your goal, and a worthy goal at that, but at what price? Apply this standard to everything, including whether to collaborate with other people or come to their aid. In the end, life is short, opportunities are few, and you have only so much energy to draw on. A nd in this sense time is as important a consideration as any other. Never waste valuable time, or mental peace of mind, on the affairs of others—that is too high a price to pay.",
+            "In the face of the world's harshness and danger, organisms of any kind develop protection — a coat of armor, a rigid system, a comforting ritual. For the short term, it may work, but for the long term it spells disaster. People weighed down by a system and inflexible ways of doing things cannot move fast, cannot sense or adapt to change. They lumber around more and more slowly until they go the way of the brontosaurus. Learn to move fast and adapt or you will be eaten. The best way to avoid this fate is to assume formlessness. No predator alive can attack what it cannot see.",
+            "A person who has something to prove will move mountains for you.",
+            "Be particularly careful with sarcasm: The momentary satisfaction you gain with your biting words will be outweighed by the price you pay.",
+            "What withdraws, what becomes scarce, suddenly seems to deserve our respect and honor. What stays too long, inundating us with its presence, makes us disdain it.",
+            "The more we lose ourselves in predigested theories and past experiences, the more inappropriate and delusional our response.",
+            "Being more careful is not what we need; that is just a screen for our fear of conflict and of making a mistake. What we need is double the resolve—an intensification of confidence. That will serve as a counterbalance.",
+            "Do not be lured by the need to be liked: better to be respected, even feared. Victory over your enemies will bring you a more lasting popularity.",
+            "If you are trying to mislead your enemies, it is often better to concoct something ambiguous and hard to read, as opposed to an outright deception—that deception can be uncovered and enemies can turn their discovery to their advantage, especially if you think they are still fooled and act under that belief.",
+            "The only way to break out of a negative dynamic is to confront it. Repressing your anger, avoiding the person threatening you, always looking to conciliate—these common strategies spell ruin. Avoidance of conflict becomes a habit, and you lose the taste for battle. Feeling guilty is pointless; it is not your fault you have enemies.",
+            "Every day you face battles—that is the reality for all creatures in their struggle to survive. But the greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end.",
+            "The truth is that everything starts from the top. What determines your failure or success is your style of leadership and the chain of command that you design.",
+            "What limits individuals as well as nations is the inability to confront reality, to see things for what they are. As we grow older, we become more rooted in the past. Habit takes over. Something that has worked for us before becomes a doctrine, a shell to protect us from reality. Repetition replaces creativity.",
+            "You are your own worst enemy. You waste precious time dreaming of the future instead of engaging in the present. Since nothing seems urgent to you, you are only half involved in what you do. The only way to change is through action and outside pressure.",
+            "We see people not as they are, but as they appear to us. And these appearances are usually misleading.",
+            "People never do something just once. They might try to excuse themselves, to say they lost their heads in the moment, but you can be sure they will repeat whatever foolishness they did on another occasion, compelled by their character and habits.",
+            "We are all narcissists, some deeper on the spectrum than others. Our mission in life is to come to terms with this self-love and learn how to turn our sensitivity outward, toward others, instead of inward.",
+            "You like to imagine yourself in control of your fate, consciously planning the course of your life as best you can. But you are largely unaware of how deeply your emotions dominate you.",
+            "Mastery is not a function of genius or talent, it is a function of time and intense focus applied to a particular field of knowledge.",
+            "The goal of apprenticeship is not money, a good position, a title, or a diploma, but rather the transformation of your mind and character.",
+            "There are two kinds of failure. The first comes from never trying out your ideas because you are afraid. The second kind comes from a bold and venturesome spirit. If you fail in this way, the hit that you take to your reputation is greatly outweighed by what you learn.",
+            "The future belongs to those who learn more skills and combine them in creative ways.",
+            "Your task as a student is always to maintain a beginner's mind.",
+            "If you are unsure of a course of action, do not attempt it. Your doubts and hesitations will infect your execution. Timidity is dangerous: Better to enter with boldness. Any mistakes you commit through audacity are easily corrected with more audacity.",
+            "When you are trying to impress people with words, the more you say, the more common you appear, and the less in control.",
+            "Everything that happens to you is a form of instruction if you pay attention.",
+            "Without suffering and doubts, the mind will come to rest on clichés and stay there, until the spirit dies as well. Not even enlightenment is enough. You must continually start over and challenge yourself.",
+            "Engaged in the creative process we feel more alive than ever, because we are making something and not merely consuming.",
+            "We are all in search of feeling more connected to reality—to other people, the times we live in, the natural world, our character, and our own uniqueness. Our culture increasingly tends to separate us from these realities in various ways.",
+            "In order to master a field, you must love the subject and feel a profound connection to it. Your interest must transcend the field itself and border on the religious.",
+            "There is nothing more intoxicating than victory, and nothing more dangerous.",
+            "Reputation is the cornerstone of power. Through reputation alone you can intimidate and win; once it slips, however, you are vulnerable, and will be attacked on all sides. Make your reputation unassailable.",
+            "Create a ladder of values and priorities in your life, reminding yourself of what really matters to you.",
+            "Confront one of your limitations—one of the obstructions in your path—today. Break beyond it, climb over it, think your way around it. Don’t run from it. It was created for you.",
+            "Knowing in a deep way who you are, your uniqueness, will make it that much easier to avoid all of life’s other pitfalls.",
+            "People are enthralled by mystery; because it invites constant interpretation, they never tire of it. The mysterious cannot be grasped. And what cannot be seized and consumed creates power.",
+            "No matter how hard people try to pull you in, never let your interest in their affairs and petty squabbles go beyond the surface.",
+            "When choosing people to work and associate with, do not be mesmerized by their reputation or taken in by the surface image they try to project. Instead, train yourself to look deep within them and see their character.”",
+            "People simply spend less time in social interactions and more time socializing online, which makes it increasingly difficult to develop empathy and sharpen social skills.",
+            "In a world full of endless distractions, you must focus and prioritize.",
+            "Feeling motivated and energized, we can overcome almost anything. Feeling bored and restless, our minds shut off and we become increasingly passive.",
+            "Hide your intentions not by closing up (with the risk of appearing secretive, and making people suspicious) but by talking endlessly about your desires and goals-just not the real ones.",
+            "Nothing is stable in the realm of power, and even closest of friends can be transformed into the worst of enemies.",
+            "Those qualities that separate us are often ridiculed by others or criticized by teachers. Because of these judgments, we might see our strengths as disabilities and try to work around them in order to fit in. But anything that is peculiar to our makeup is precisely what we must pay the deepest attention to and lean on in our rise to mastery.",
+            "Learn to destroy your enemies by opening holes in their own reputations. Then stand aside and let public opinion hang them.",
+            "Too much respect for other people's wisdom will make you depreciate your own.",
+            "You must avoid at all costs the idea that you can manage learning several skills at a time. You need to develop your powers of concentration and understand that trying to multitask will be the death of the process.",
+            "It can be valuable to analyze what went wrong in the past, but it is far more important to develop the capacity to think in the moment. In that way you will make far fewer mistakes to analyze.",
+            "Your mind will never go blank when it is that well prepared.",
+            "It is easy to be overwhelmed by everything that faces you in battle, where so many people are asking or telling you what to do. So many vital matters press in on you that you can lose sight of your goals and plans; suddenly you can’t see the forest for the trees.",
+            "Are there people whose work affects you in a powerful way? Analyze this and use them as models.",
+            "Do something that makes you feel at the peak of your being today.",
+            "When in doubt, focus on the things you know you do well. Expand outward from the center.",
+            "No one is really going to help you or give you direction. In fact, the odds are against you.",
+            "People around you, constantly under the pull of their emotions, change their ideas by the day or by the hour, depending on their mood. You must never assume that what people say or do in a particular moment is a statement of their permanent desires.",
+            "The future belongs to those who learn more skills and combine them in creative ways.",
+            "Never waste valuable time, or mental peace of mind, on the affairs of others—that is too high a price to pay.",
+            "Without a worthy opponent a man or group cannot grow stronger.",
+            "Intellect is a magnitude of intensity, not a magnitude of extensity.",
+            "Power is essentially amoral and one of the most important skills to acquire is the ability to see circumstances rather than good or evil. Power is a game—this cannot be repeated too often—and in games you do not judge your opponents by their intentions but by the effect of their actions.",
+            "Never pick a fight with someone you're not sure you can defeat.",
+            "So much of power is not what you do but what you do not do—the rash and foolish actions that you refrain from before they get you into trouble.",
+            "The more we lose ourselves in predigested theories and past experiences, the more inappropriate and delusional our response.",
+            "Without enemies you will not know how or where to maneuver, and you will lose a sense of your limits, of how far you can go.",
+            "Your first task as a strategist is to widen your concept of the enemy, to include in that group those who are working against you, thwarting you, even in subtle ways.",
+            "Being more careful is not what we need; that is just a screen for our fear of conflict and of making a mistake. What we need is double the resolve—an intensification of confidence. That will serve as a counterbalance.",
+            "Do not be lured by the need to be liked: better to be respected, even feared. Victory over your enemies will bring you a more lasting popularity.",
+            "People cannot stay motivated if their material needs go unmet. If they feel exploited in any way, their natural selfishness will come to the surface and they will begin to peel off from the group.",
+            "Understand: once people know what pleases you and what angers you, they turn into trained poodles, working to charm you with apparent good behavior.",
+            "Understand: the more you want the prize, the more you must compensate by examining what getting it will take.",
+            "When our emotions are engaged, we often have trouble seeing things as they are.",
+            "Reflect on those moments in life when you were active (followed your own path) and those moments when you were passive (followed what others wanted). Compare the emotions you experienced.",
+            "The very desire to find shortcuts makes you eminently unsuited for any kind of mastery. There is no possible reversal to this process.",
+            "You must see your attempt at attaining mastery as something extremely necessary and positive.",
+            "The key to success in any field is first developing skills in various areas, which you can later combine in unique and creative ways.",
+            "Remember that what you are after is a series of practical results and accomplishments, not a list of unrealized dreams and aborted projects. Working with smaller, embedded goals will keep you moving in such a direction.",
+            "The process of following your Life’s Task all the way to mastery can essentially begin at any point in life. The hidden force within you is always there and ready to be engaged, but only if you can silence the noise from others.",
+            "You must see your career or vocational path more as a journey with twists and turns rather than a straight line.",
+            "Never take it for granted that your past successes will continue in the future. Actually, your past successes are your biggest obstacle: every battle, every war, is different, and you cannot assume that what worked before will work today.",
+            "If you work hard, you will make your way to the inner circle of knowledge. That is the end goal of mastery: an inside-out understanding.",
+            "You may have brilliant ideas, the kind that could revolutionize the world, but unless you can express them effectively, they will have no force, no power to enter people’s minds in a deep and lasting way.",
+            "Repeated failure will toughen your spirit and show you with absolute clarity how things must be done. In fact, it is a curse to have everything go right on your first attempt. You will fail to question the element of luck, making you think that you have the golden touch. When you do inevitably fail, it will confuse and demoralize you past the point of learning.",
+            "The moment that you rest, thinking that you have attained the level you desire, a part of your mind enters a phase of decay.",
+            "What matters is not education or money, but your persistence and the intensity of your desire to learn; that failures, mistakes, and conflicts are often the best education of all; and how true creativity and mastery emerge from all this.",
+            "Think back on the moments when you felt deeply and personally connected to an activity. Think about the pleasure it brought you. In such activities are signs of your true purpose.",
+            "Stop listening so much to the words and opinions of others, telling you who you are and what you should like and dislike.",
+            "Operating with long-term goals will bring you tremendous clarity and resolve.",
+            "Knowing in a deep way who you are, your uniqueness, will make it that much easier to avoid all of life’s other pitfalls.",
+            "Learning how to learn is the most important skill to acquire.",
+            "Everything worth doing has a learning curve. When it gets hard, remember the goal: reaching the cycle of accelerated returns.",
+            "Make a list of the people in your life who live with purpose. Prioritize spending more time with them.",
+            "Find the deepest pleasure in absorbing knowledge and information. Feel like you never have enough.",
+            "Reading books and materials that go beyond what is required is always a good starting point. Being exposed to ideas in the wide world, you will tend to develop a hunger for more and more knowledge.",
+            "Try the thing you don’t think you’re quite ready for.",
+            "Those who follow a rigid, singular path in their youth often find themselves in a career dead end in their forties.",
+            "In dealing with any problem, you must train yourself to look at how it inevitably connects to a larger picture.",
+            "Do not waste time on things you cannot change or influence.",
+            "The problem is that we humans are deep conformists.",
+            "The truth is that creative activity is one that involves the entire self - our emotions, our levels of energy, our characters, and our minds.",
+            "Our natural tendency is to project onto other people our own belief and value systems, in ways in which we are not even aware.",
+            "Most people are perpetually locked in the present. Their decisions are overly influenced by the most immediate event; they easily become emotional and ascribe greater significance to a problem than it should have in reality.",
+            "Embrace your strangeness. Identify what makes you different. Fuse those things together and become an anomaly.",
+            "It is more important to understand and deal with the bad stuff since the good stuff will take care of itself.",
+            "You must think more like a writer in approaching the people you deal with, even the worst sorts.",
+            "Remember that everything people do is a sign of some sort; there is no such thing as a gesture that does not communicate. You will pay attention to people’s silences, the clothes they wear, the arrangement of objects on their desk, their breathing patterns, the tension in certain muscles (particularly in the neck), the subtext in their conversations—what is not said or what is implied. All of these discoveries should excite and impel you to go further.",
+            "We want to learn the lesson and not repeat the experience. But in truth, we do not like to look too closely at what we did; our introspection is limited. Our natural response is to blame others, circumstances, or a momentary lapse of judgment.",
+            "Do not leave your reputation to chance or gossip; it is your life's artwork, and you must craft it, hone it, and display it with the care of an artist.",
+            "Keep your friends for friendship, but work with the skilled and competent.",
+            "If you are unsure of a course of action, do not attempt it. Your doubts and hesitations will infect your execution. Timidity is dangerous: Better to enter with boldness. Any mistakes you commit through audacity are easily corrected with more audacity. Everyone admires the bold; no one honors the timid.",
+            "When you show yourself to the world and display your talents, you naturally stir all kinds of resentment, envy, and other manifestations of insecurity... you cannot spend your life worrying about the petty feelings of others.",
+            "Mistakes and failures are precisely your means of education.",
+            "Think of the workplace as a kind of theater in which you are always wearing a mask. (Reserve your most interesting and colorful thoughts for your friends, and for those whom you can trust outside work.)",
+            "Masters manage to blend the two—discipline and a childlike spirit—together into what we shall call the Dimensional Mind. Such a mind is not constricted by limited experience or habits. It can branch out into all directions and make deep contact with reality. It can explore more dimensions of the world.",
+            "The greatest impediment to creativity is your impatience, the almost inevitable desire to hurry up the process, express something, and make a splash.",
+            "When you look at the exceptionally creative work of Masters, you must not ignore the years of practice, the endless routines, the hours of doubt, and the tenacious overcoming of obstacles these people endured. Creative energy is the fruit of such efforts and nothing else.",
+            "In any competitive environment in which there are winners or losers, the person who has the wider, more global perspective will inevitably prevail. The reason is simple: such a person will be able to think beyond the moment and control the overall dynamic through careful strategizing.",
+            "Empathy plays an enormous role in learning and knowledge.",
+            "Everyone holds his fortune in his own hands, like a sculptor the raw material he will fashion into a figure. But it’s the same with that type of artistic activity as with all others: We are merely born with the capability to do it. The skill to mold the material into what we want must be learned and attentively cultivated.",
+            "Anything that is alive is in a continual state of change and movement. The moment that you rest, thinking that you have attained the level you desire, a part of your mind enters a phase of decay.",
+            "Masters return to this childlike state, their works displaying degrees of spontaneity and access to the unconscious, but at a much higher level than the child.",
+            "Our levels of desire, patience, persistence, and confidence end up playing a much larger role in success than sheer reasoning powers. Feeling motivated and energized, we can overcome almost anything. Feeling bored and restless, our minds shut off and we become increasingly passive.",
+            "We must learn to develop ourselves. At the same time, it is a world teeming with critical problems and opportunities, best solved and seized by entrepreneurs—individuals or small groups who think independently, adapt quickly, and possess unique perspectives. Your individualized, creative skills will be at a premium.",
+            "You must never disdain an apprenticeship with no pay. In fact, it is often the height of wisdom to find the perfect mentor and offer your services as an assistant for free.",
+            "We must make ourselves study as deeply as possible the technology we use, the functioning of the group we work in, the economics of our field, its lifeblood. We must constantly ask the questions—how do things work, how do decisions get made, how does the group interact?",
+            "Masters are those who by nature have suffered to get to where they are. They have experienced endless criticisms of their work, doubts about their progress, setbacks along the way. They know deep in their bones what is required to get to the creative phase and beyond.",
+            "Often it is the quiet ones, those who give out less at first glance, who hide greater depths, and who secretly wield greater power.",
+            "Concentrated practice over time cannot fail but produce results.",
+            "You must let go of your need for comfort and security. Creative endeavors are by their nature uncertain. You may know your task, but you are never exactly sure where your efforts will lead. If you need everything in your life to be simple and safe, this open-ended nature of the task will fill you with anxiety. If you are worried about what others might think and about how your position in the group might be jeopardized, then you will never really create anything. You will unconsciously tether your mind to certain conventions, and your ideas will grow stale and flat.",
+            "If you allow yourself to learn who you really are by paying attention to that voice and force within you, then you can become what you were fated to become - an individual, a Master.",
+            "Your mind is the starting point of all war and all strategy. A mind that is easily overwhelmed by emotion, that is rooted in the past instead of the present, that cannot see the world with clarity and urgency, will create strategies that will always miss the mark.",
+            "Every day you face battles—that is the reality for all creatures in their struggle to survive. But the greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end.",
+            "Events in life mean nothing if you do not reflect on them in a deep way, and ideas from books are pointless if they have no application to life as you live it.",
+            "We humans like to believe that we are consistent and mature, and that we have reasonable control over our lives. We make decisions based on rational considerations, on what will benefit us the most. We have free will. We know who we are, more or less. But in one particular aspect of life these self-opinions are all easily shattered - when we fall in love.",
+            "Train yourself to ignore the front that people display, the myth that surrounds them, and instead plumb their depths for signs of their character.",
+            "People never do something just once. They might try to excuse themselves, to say they lost their heads in the moment, but you can be sure they will repeat whatever foolishness they did on another occasion, compelled by their character and habits",
+            "Once people know what pleases you and what angers you, they turn into trained poodles, working to charm you with apparent good behavior.",
+            "Understand: the more you want the prize, the more you must compensate by examining what getting it will take.",
+            "Look at things as they are, not as your emotions color them.",
+            "People who accuse you of being unfair, for example, who try to make you feel guilty, who talk about justice and morality, are trying to gain an advantage on the chessboard.",
+            "Avoidance of conflict becomes a habit, and you lose the taste for battle. Feeling guilty is pointless; it is not your fault you have enemies",
+            "Remember: there are always people out there who are more aggressive, more devious, more ruthless than you are, and it is inevitable that some of them will cross your path.",
+            "It can be valuable to analyze what went wrong in the past, but it is far more important to develop the capacity to think in the moment. In that way you will make far fewer mistakes to analyze.",
+            "Our greatest weakness is losing heart, doubting ourselves, becoming unnecessarily cautious. Being more careful is not what we need; that is just a screen for our fear of conflict and of making a mistake.",
+            "Your mind will never go blank when it is that well prepared.",
+            "Every day you face battles—that is the reality for all creatures in their struggle to survive. But the greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end.",
+            "The truth is that everything starts from the top. What determines your failure or success is your style of leadership and the chain of command that you design.",
+            "Life has more meaning in the face of Death.",
+            "Being attacked is a sign that you are important enough to be a target. You should relish the attention and the chance to prove yourself.",
+            "Your days are numbered. Will you pass them half awake and halfhearted or will you live with a sense of urgency?",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "Think of the mind as a river: the faster it flows, the better it keeps up with the present and responds to change. The faster it flows, also the more it refreshes itself and the greater its energy. Obsessional thoughts, past experiences (whether traumas or successes), and preconceived notions are like boulders or mud in this river, settling and hardening there and damming it up. The river stops moving; stagnation sets in. You must wage constant war on this tendency in the mind.",
+            "When you have success, be extra wary. When you are angry, take no action. When you are fearful, know you are going to exaggerate the dangers you face.",
+            "The greatest battle of all is with yourself—your weaknesses, your emotions, your lack of resolution in seeing things through to the end. You must declare unceasing war on yourself.",
+            "Your mind is weaker than your emotions. But you become aware of this weakness only in moments of adversity--precisely the time when you need strength. What best equips you to cope with the heat of battle is neither more knowledge nor more intellect. What makes your mind stronger, and more able to control your emotions, is internal discipline and toughness. No one can teach you this skill; you cannot learn it by reading about it. Like any discipline, it can come only through practice, experience, even a little suffering. The first step in building up presence of mind is to see the need for it -- to want it badly enough to be willing to work for it.",
+            "It is your own bad strategies, not the unfair opponent, that are to blame for your failures. You are responsible for the good and bad in your life.",
+            "Events in life mean nothing if you do not reflect on them in a deep way, and ideas from books are pointless if they have no application to life as you live it.",
+            "Grand strategy is the art of looking beyond the present battle and calculating ahead. Focus on your ultimate goal and plot to reach it.",
+            "Our natural tendency is to project onto other people our own belief and value systems, in ways in which we are not even aware.",
+            "Most people are perpetually locked in the present. Their decisions are overly influenced by the most immediate event; they easily become emotional and ascribe greater significance to a problem than it should have in reality.",
+            "The conventional mind is passive - it consumes information and regurgitates it in familiar forms. The dimensional mind is active, transforming everything it digests into something new and original, creating instead of consuming.",
+            "If we experience any failures or setbacks, we do not forget them because they offend our self-esteem. Instead we reflect on them deeply, trying to figure out what went wrong and discern whether there are any patterns to our mistakes.",
+            "Everything that happens to you is a form of instruction if you pay attention.",
+            "It is in fact the height of selfishness to merely consume what others create and to retreat into a shell of limited goals and immediate pleasures.",
+            "You must understand the following: In order to master a field, you must love the subject and feel a profound connection to it. Your interest must transcend the field itself and border on the religious.",
+            "Become who you are by learning who you are.",
+            "The time that leads to mastery is dependent on the intensity of our focus.",
+            "People around you, constantly under the pull of their emotions, change their ideas by the day or by the hour, depending on their mood. You must never assume that what people say or do in a particular moment is a statement of their permanent desires.",
+            "The future belongs to those who learn more skills and combine them in creative ways.",
+            "A false path in life is generally something we are attracted to for the wrong reasons—money, fame, attention, and so on. If it is attention we need, we often experience a kind of emptiness inside that we are hoping to fill with the false love of public approval.",
+            "Power rarely ends up in the hands of those who start a revolution, or even of those who further it; power sticks to those who bring it to a conclusion.",
+            "In the course of your life you will be continually encountering fools. There are simply too many to avoid. We can classify people as fools by the following rubric: when it comes to practical life, what should matter is getting long term results, and getting the work done in as efficient and creative a manner as possible. That should be the supreme value that guides people’s action. But fools carry with them a different scale of values. They place more importance on short-term matters – grabbing immediate money, getting attention from the public or media, and looking good. They are ruled by their ego and insecurities. They tend to enjoy drama and political intrigue for their own sake. When they criticize, they always emphasize matters that are irrelevant to the overall picture or argument. They are more interested in their career and position than in the truth. You can distinguish them by how little they get done, or by how hard they make it for others to get results. They lack a certain common sense, getting worked up about things that are not really important while ignoring problems that will spell doom in the long term. The natural tendency with fools is to lower yourself to their level. They annoy you, get under your skin, and draw you into a battle. In the process, you feel petty and confused. You lose a sense of what is really important. You can’t win an argument or get them to see your side or change their behavior, because rationality and results don’t matter to them. You simply waste valuable time and emotional energy. In dealing with fools you must adopt the following philosophy: they are simply a part of life, like rocks or furniture. All of us have foolish sides, moments in which we lose our heads and think more of our ego or short-term goals. It is human nature. Seeing this foolishness within you, you can then accept it in others. This will allow you to smile at their antics, to tolerate their presence as you would a silly child, and to avoid the madness of trying to change them. It is all part of the human comedy, and it is nothing to get upset or lose sleep over.",
+            "The world is full of people with different characters and temperaments. We all have a dark side, a tendency to manipulate, and aggressive desires. The most dangerous types are those who repress their desires or deny the existence of them, often acting them out in the most underhanded ways.",
+            "Remind yourself that winning an argument or proving your point really gets you nowhere in the long run. Win through your actions, not your words.",
+            "Be extra careful in the work environment with those who like to maintain their position through charm and being political, rather than getting things done. They are very prone to envying and hating those who work hard and get results. They will slander and sabotage you without any warning.",
+            "You may grow frustrated and depressed, never realizing that the source of it is your alienation from your own creative potential.",
+            "People will take from you what they can. If they sense that you are the type of person who accepts and submits, they will push and push until they have established an exploitative relationship with you.",
+            "Learn to move fast and adapt or you will be eaten. The best way to avoid this fate is to assume formlessness. No predator alive can attack what it cannot see.",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "Find people with the skills and creativity you lack. Either hire them or find a way to take their work and make it your own.",
+            "If you yearn for power, quickly lay honesty aside, and train yourself in the art of concealing your intentions.",
+            "Experimenting with the skills and options related to your personality and inclinations is not only the single most essential step in developing a high sense of purpose, it is perhaps the most important step in life in general.",
+            "The more you are seen and heard from, the more common you appear. If you are already established in a group, temporary withdrawal from it will make you more talked about, even more admired. You must learn when to leave. Create value through scarcity.",
+            "The true spirit of conversation consists more in bringing out the cleverness of others than in showing a great deal of it yourself; he who goes away pleased with himself and his own wit is also greatly pleased with you.",
+            "A natural response when people feel overwhelmed is to retreat into various forms of passivity. If we don’t try too much in life, if we limit our circle of action, we can give ourselves the illusion of control.",
+            "A person who cannot control his words shows that he cannot control himself, and is unworthy of respect.",
+            "Make your victims feel smart—and not just smart, but smarter than you are.",
+            "Words are a dime a dozen. Everyone knows that in the heat of an argument, we will all say anything to support our cause. We will quote the Bible, refer to unverifiable statistics. Who can be persuaded by bags of air like that? Action and demonstration are much more powerful and meaningful.",
+            "When you understand the fear, then you can begin to move past it. So when I hear people say it’s innate, you can’t learn it, I just want to hit them in the head.",
+            "Most people are perpetually locked in the present. Their decisions are overly influenced by the most immediate event; they easily become emotional and ascribe greater significance to a problem than it should have in reality.",
+            "Without enemies you will not know how or where to maneuver, and you will lose a sense of your limits, of how far you can go.",
+            "Commit harmless mistakes that will not hurt you in the long run but will give you the chance to ask for his help. Masters adore such requests. A master who cannot bestow on you the gifts of his experience may direct rancor and ill will at you instead.",
+            "We are continually judging other people. We want others to think and act a certain way. Usually, the way we think and act. Because this is impossible, we continually get upset. Instead, we should see other people as phenomena, as neutral as comets or planets. They come in all varieties, which makes like rich and interesting.",
+            "If you feel lost and confused, if you lose your sense of direction, if you cannot tell the difference between friend and foe, you have only yourself to blame.",
+            "Concentrate on maintaining a high sense of purpose, and the success will flow to you naturally.",
+            "Great strategists do not act according to preconceived ideas; they respond to the moment, like children. Their minds are always moving, and they are always excited and curious. They quickly forget the past—the present is much too interesting.",
+            "Adapt your inclinations. Avoid having rigid goals and dreams. Change is the law.",
+            "Many men are intimidated by beauty and prefer to worship it from afar; Others are drawn in, but not for the purpose of conversation. The Beauty suffers from isolation.",
+            "Everything in life can be taken away from you and generally will be at some point. Your wealth vanishes, the latest gadgetry suddenly becomes passé, your allies desert you. But if your mind is armed with the art of war, there is no power that can take that away. In the middle of a crisis, your mind will find its way to the right solution. Having superior strategies at your fingertips will give your maneuvers irresistible force. As Sun Tzu says, “Being unconquerable lies with yourself.\"",
+            "Results are important, but the way they are achieved, the process, is equally important.",
+            "Power requires the ability to play with appearances. To this end you must learn to wear many masks and keep a bag full of deceptive tricks. Deception and masquerade should not be seen as ugly or immoral. All human interaction requires deception on many levels, and in some ways what separates humans from animals is our ability to lie and deceive.",
+            "The emphasis must be on the work, never on yourself or the desire for recognition. You are fusing your mind with the work itself, and any intrusive thoughts from your ego or doubts about yourself or personal obsessions will interrupt the flow. Not only will you find this flow immensely therapeutic, but it will also yield uncannily creative results.",
+            "A person of strong character is like gold—rare but invaluable. They can adapt, learn, and improve themselves.",
+            "Often what separates a mediocre general from a superior one is not their strategies or maneuvers but their vision--they simply look at the same problem from a different angle. Freed from the stranglehold of convention, the superior general naturally hits on the right strategy.",
+            "Life naturally involves conflicting interests; people have their own agendas, and they collide with yours. Instead of taking this personally or concerning people with people's intentions, you must simply work to protect and advance yourself in this competitive game.",
+            "If you are to stay in a relationship, beware a flagging of energy, a creeping familiarity that will spoil the fantasy. A second seduction is required. Never let the other person take you for granted-use absence, create pain and conflict, to keep the seduced on tenterhooks.",
+            "Always look at the bigger picture, think long-term, and strategize accordingly.",
+            "Make the mind tougher by exposing it to adversity.",
+            "The moment people feel they know what to expect from you, your spell on them is broken.",
+            "When you show yourself to the world and display your talents, you naturally stir all kinds of resentment, envy, and other manifestations of insecurity… you cannot spend your life worrying about the petty feelings of others.",
+            "Feeling angry and sorry for ourselves, or we opt for distractions and quick ways to dull the pain. This becomes a habit we cannot shake, and we tend to feel the generalized anxiety and emptiness that come from all this avoidance.",
+            "Through our work and through getting what we need on our own, without depending on others, we can stand tall and realize our potential as humans.",
+            "People never do something just once. They might try to excuse themselves, to say they lost their heads in the moment, but you can be sure they will repeat whatever foolishness they did on another occasion, compelled by their character and habits",
+            "If you want to test a man’s character, give him power.",
+            "If people truly learned from their experience, we would find few mistakes in the world and career paths that ascend ever upward.",
+            "People simply spend less time in social interactions and more time socializing online, which makes it increasingly difficult to develop empathy and sharpen social skills.",
+            "Like everyone, you think you are rational, but you are not. Rationality is not a power you are born with but one you acquire through training and practice.",
+            "We see people not as they are, but as they appear to us. And these appearances are usually misleading.",
+            "You like to imagine yourself in control of your fate, consciously planning the course of your life as best you can. But you are largely unaware of how deeply your emotions dominate you.",
+            "Mastery is not a question of genetics of luck, but of following your natural inclinations and the deep desires that stirs you from within.",
+            "In order to master a field, you must love the subject and feel a profound connection to it. Your interest must transcend the field itself and border on the religious.",
+            "Everything that happens to you is a form of instruction if you pay attention.",
+            "Only create associations with positive affinities. Make this a rule of life and you will benefit more than from all the therapy in the world.",
+            "People are more complicated than the masks they wear in society.",
+            "Keep your friends for friendship, but work with the skilled and competent.",
+            "Train yourself to take nothing personally.",
+            "Move toward challenges that will toughen and improve you.",
+            "The ultimate power in life is to be completely self-reliant, completely yourself.",
+            "The greatest test of courage on earth is to bear defeat without losing heart.",
+            "You must learn when to leave. Create value through scarcity.",
+            "What you do not react to cannot drag you down in a futile engagement.",
+            "You must not be afraid of your uniqueness and you must care less and less what people think of you.",
+            "Do not struggle against your vulnerabilities, or try to repress them, but put them info play.",
+            "The moment people feel they know what to expect from you, your spell on them is broken.",
+            "Let go of your need for comfort and security. Creative endeavors are by their nature uncertain.",
+            "If you have no power over yourself, then you’re at the whim of everything else in this world.",
+            "Embrace your strangeness. Identify what makes you different. Fuse those things together and become an anomaly.",
+            "In dealing with fools you must adopt the following philosophy: they are simply a part of life, like rocks or furniture.",
+            "Your goal in life must be to always move higher and higher up the food chain, where you alone control the direction of your enterprise and depend on no one.",
+            "Displaying anger and emotion are signs of weakness; you cannot control yourself, so how can you control anything?",
+            "Actively rebel against the forces that push you away from your true path.",
+            "You must always be prepared to place a bet on yourself, on your future, by heading in a direction that others seem to fear.",
+            "Actively rebel against the forces that push you away from your true path.",
+            "Focus on your greater goal, your destiny.",
+            "You have a responsibility to contribute to the culture and times you live in.",
+            "Create a ladder of values and priorities in your life, reminding yourself of what really matters to you.",
+            "If you don’t know yourself, you can’t control your own emotions.",
+            "Your sense of self-worth comes from you alone — never the opinion of others.",
+            "The need for certainty is the greatest disease the mind faces.",
+            "The world wants to assign you a role in life. And once you accept that role you are doomed.",
+            "Too many people believe that everything must be pleasurable in life.",
+            "The first step in the acquisition of wisdom is silence, the second listening, the third memory, the fourth practice, the fifth teaching others.",
+            "It is a curse to have everything go right on your first attempt.",
+            "Constantly remind yourself of how little you truly know and of how mysterious the world remains",
+            "You don’t want to abandon the skills and experience you have gained, but to find a new way to apply them. Your eye is on the future, not the past.",
+            "Eventually, the time that was not spent on learning skills will catch up with you, and the fall will be painful.",
+            "Slowly expand the boundaries of what can be made.",
+            "Concentrate on a single goal, a single task, and beat it into submission.",
+            "The time that leads to mastery is dependent on the intensity of our focus.",
+            "The person with the more global perspective wins. Expand your gaze.",
+            "Understand: presence of mind is the ability to detach yourself, to see the whole battlefield, the whole picture, with clarity.",
+            "Our successes and failures in life can be traced to how well or how badly we deal with the inevitable conflicts that confront us in society.",
+            "Hesitation creates gaps. Boldness obliterates them.",
+            "True genius, in strategy or anywhere, lies in self-control, self-mastery, presence of mind, fluidity of thought.",
+            "The mind must not wander from goal to goal, or be distracted by success from its sense of purpose and proportion.",
+            "When it comes to your work, be supremely rational and realistic, always looking to improve.",
+            "The mind must not wander from goal to goal, or be distracted by success from its sense of purpose and proportion.",
+            "Make creativity rather than comfort your goal and you will ensure far more success for the future.",
+            "Most people can’t handle boredom. That means they can’t stay on one thing until they get good at it. And they wonder why they’re unhappy.",
+            "The secret to success is retaining your child-like qualities.",
+            "The main thing that’ll get you ahead in life is your level of enthusiasm and excitement.",
+            "Don’t get comfortable. Take risks. Change. Try learning about a field you don’t know anything about. Or stepping into a viewpoint you’ve never considered.",
+            "The more conflicts and difficult situations you put yourself through, the more battle-tested your mind will be.",
+            "Mastery is not a function of genius or talent. It is a function of time and intense focus applied to a particular field of knowledge."
+        ];
+
+        const STORAGE_KEY_SAVED = 'savedQuotes';
+        const STORAGE_KEY_BACKUP = 'wiscriptBackup';
+
+        let currentWiscripts = [...wiscripts];
+        let filteredWiscripts = [...wiscripts];
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const wiscriptContainer = document.getElementById('wiscriptContainer');
+
+        // Initialize with random wiscripts
+        function init() {
+            displayRandomWiscript();
+        }
+
+        // Display random wiscript
+        function displayRandomWiscript() {
+            const randomIndex = Math.floor(Math.random() * currentWiscripts.length);
+            const randomWiscript = currentWiscripts[randomIndex];
+            displayWiscripts([randomWiscript]);
+        }
+
+        // Display wiscripts
+        function displayWiscripts(wiscriptsToShow) {
+            wiscriptContainer.innerHTML = '';
+            const savedQuotes = JSON.parse(localStorage.getItem(STORAGE_KEY_SAVED) || '[]');
+
+            if (wiscriptsToShow.length === 0) {
+                wiscriptContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-text">No WiScripts found. Try a different search term.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            wiscriptsToShow.forEach((wiscript, index) => {
+                const isSaved = savedQuotes.includes(wiscript);
+                const starClass = isSaved ? 'star-btn saved' : 'star-btn';
+                const starIcon = isSaved ? '★' : '☆';
+
+                // Escape simple quotes for the onclick handler
+                const safeQuote = wiscript.replace(/'/g, "\\'");
+
+                const card = document.createElement('div');
+                card.className = 'wiscript-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <p class="wiscript-text">
+                        <span class="wiscript-quote">"${wiscript}"</span>
+                        <button class="${starClass}" onclick="toggleSaveQuote('${safeQuote}')" title="${isSaved ? 'Unsave' : 'Save'}">${starIcon}</button>
+                    </p>
+                `;
+                wiscriptContainer.appendChild(card);
+            });
+        }
+
+        // Search functionality
+        function performSearch(query) {
+            if (!query.trim()) {
+                displayRandomWiscript();
+                return;
+            }
+
+            const searchTerm = query.toLowerCase();
+            filteredWiscripts = wiscripts.filter(wiscript =>
+                wiscript.toLowerCase().includes(searchTerm)
+            );
+
+            displayWiscripts(filteredWiscripts);
+            currentWiscripts = filteredWiscripts.length > 0 ? filteredWiscripts : wiscripts;
+        }
+
+        // Toggle Save Quote
+        function toggleSaveQuote(quote) {
+            let saved = JSON.parse(localStorage.getItem(STORAGE_KEY_SAVED) || '[]');
+            let backup = JSON.parse(localStorage.getItem(STORAGE_KEY_BACKUP) || '[]');
+
+            if (saved.includes(quote)) {
+                saved = saved.filter(q => q !== quote);
+            } else {
+                saved.push(quote);
+                // Also add to backup history if not present
+                if (!backup.includes(quote)) {
+                    backup.push(quote);
+                    localStorage.setItem(STORAGE_KEY_BACKUP, JSON.stringify(backup));
+                }
+            }
+
+            localStorage.setItem(STORAGE_KEY_SAVED, JSON.stringify(saved));
+
+            // Refund/Update view
+            if (document.getElementById('savedContainer').classList.contains('hidden')) {
+                displayWiscripts(currentWiscripts); // Re-render main list to update stars
+            } else {
+                renderSavedView(); // Re-render saved view logic defined below
+            }
+        }
+
+        // Render Saved View (Flashcards)
+        function renderSavedView() {
+            const savedContainer = document.getElementById('savedContainer');
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_SAVED) || '[]');
+            savedContainer.innerHTML = '';
+
+            if (saved.length === 0) {
+                savedContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">★</div>
+                        <div class="empty-state-text">No saved quotes yet. Star some quotes to see them here!</div>
+                    </div>`;
+                return;
+            }
+
+            saved.forEach((quote, index) => {
+                const card = document.createElement('div');
+                card.className = 'saved-card';
+                card.onclick = function () {
+                    this.classList.toggle('flipped');
+                };
+
+                card.innerHTML = `
+                    <div class="saved-card-inner">
+                        <div class="saved-card-front">
+                            <p class="wiscript-text">"${quote}"</p>
+                        </div>
+                        <div class="saved-card-back">
+                            <p>Wisdom Learned</p>
+                        </div>
+                    </div>
+                `;
+                savedContainer.appendChild(card);
+            });
+        }
+
+        // Backup Implementation
+        async function backupQuotes() {
+            const backup = localStorage.getItem(STORAGE_KEY_BACKUP) || '[]';
+            // If backup is empty but saved quotes exist, sync them first (migration support)
+            let backupArr = JSON.parse(backup);
+            if (backupArr.length === 0) {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_SAVED) || '[]');
+                if (saved.length > 0) {
+                    backupArr = [...saved];
+                    localStorage.setItem(STORAGE_KEY_BACKUP, JSON.stringify(backupArr));
+                }
+            }
+
+            const dataStr = JSON.stringify(backupArr, null, 2);
+
+            // Use File System Access API if supported for overwrite capability
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'wiscript_backup.json',
+                        types: [{
+                            description: 'JSON Files',
+                            accept: { 'application/json': ['.json'] },
+                        }],
+                    });
+
+                    const writable = await handle.createWritable();
+                    await writable.write(dataStr);
+                    await writable.close();
+                    return; // Success
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('File Picker Error:', err);
+                        // Fallback to legacy download on error (but not abort)
+                    } else {
+                        return; // User cancelled
+                    }
+                }
+            }
+
+            // Legacy Fallback
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wiscript_backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Restore Implementation
+        function restoreQuotes(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const quotes = JSON.parse(e.target.result);
+                    if (Array.isArray(quotes)) {
+                        // Merge strategies can vary, here we overwrite 'saved' and 'backup' to restore state exactly or cumulatively.
+                        // Impl plan said "Overwrite both".
+                        localStorage.setItem(STORAGE_KEY_SAVED, JSON.stringify(quotes));
+                        localStorage.setItem(STORAGE_KEY_BACKUP, JSON.stringify(quotes));
+
+                        alert('Wisdom restored successfully!');
+
+                        // Reset file input
+                        event.target.value = '';
+
+                        // Update UI
+                        if (!document.getElementById('savedContainer').classList.contains('hidden')) {
+                            renderSavedView();
+                        } else {
+                            displayWiscripts(currentWiscripts);
+                        }
+                    } else {
+                        alert('Invalid backup file format.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Error reading backup file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            currentWiscripts = [...wiscripts];
+            displayRandomWiscript();
+
+            // Rotate animation
+            const icon = refreshBtn.querySelector('.refresh-icon');
+            icon.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                icon.style.transform = 'rotate(0deg)';
+            }, 500);
+        });
+
+        // New Event Listeners for Header Buttons
+        document.getElementById('backupBtn').addEventListener('click', backupQuotes);
+
+        const restoreBtn = document.getElementById('restoreBtn');
+        const restoreFile = document.getElementById('restoreFile');
+        restoreBtn.addEventListener('click', () => restoreFile.click());
+        restoreFile.addEventListener('change', restoreQuotes);
+
+        const savedTabBtn = document.getElementById('savedTabBtn');
+        const wiscriptContainerDiv = document.getElementById('wiscriptContainer');
+        const savedContainerDiv = document.getElementById('savedContainer');
+        const searchSection = document.querySelector('.search-section');
+        const mainTitle = document.querySelector('h1');
+
+        savedTabBtn.addEventListener('click', () => {
+            wiscriptContainerDiv.classList.add('hidden');
+            searchSection.classList.add('hidden');
+            savedContainerDiv.classList.remove('hidden');
+            renderSavedView();
+        });
+
+        mainTitle.style.cursor = 'pointer';
+        mainTitle.addEventListener('click', () => {
+            savedContainerDiv.classList.add('hidden');
+            wiscriptContainerDiv.classList.remove('hidden');
+            searchSection.classList.remove('hidden');
+            // Refresh main view to update stars if changed
+            displayWiscripts(currentWiscripts);
+        });
+
+        // Initialize app
+        init();
+
+        // PWA Service Worker Registration (No-op for single file, mostly for future proofing or local servers)
+        if ('serviceWorker' in navigator) {
+            // We can't register a real SW without an external file or complex hack, 
+            // but the Manifest is the key part for "Add to Home Screen" styling.
+            // A simple registration attempt:
+            window.addEventListener('load', () => {
+                // This will fail on file:// protocol, which is expected.
+                // It works if served via http://localhost or https://
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration skipped (offline/file mode)'));
+            });
+        }
+    </script>
+</body>
+
+</html>
